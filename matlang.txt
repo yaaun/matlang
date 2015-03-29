@@ -33,6 +33,7 @@ elementy to:
     * Liczba naturalna (Nat)
     * Liczba całkowita (Całk)
     * Logiczna (Log)
+    * Pseudotyp reprezentujący dowolny typ (?)
   
   Liczby naturalne mogą przyjmować wartości od 0 do 2^32 - 1.
   
@@ -46,8 +47,11 @@ elementy to:
   W przypadku działań logicznych z udziałem liczb, wartości niezerowe są
   traktowane jako prawdziwe, a wartość zerowa jako fałsz.
   
-  W obliczu braku definicji wartości dla zmiennejm, typy liczbowe przyjmują
+  W obliczu braku definicji wartości dla zmiennej, typy liczbowe przyjmują
   domyślną wartość zerową. Typ logiczny przyjmuje domyślną wartość fałszywą.
+  
+  Wykorzystanie pseudotypu "?" jest obecnie zarezerwowane dla funkcji z
+  biblioteki języka. Użytkownik nie może użyć takiego typu w swoim programie.
 
 
   2b. Zmienne
