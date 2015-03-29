@@ -1,0 +1,6 @@
+funkcja Całk suma_ciągu(Całk początek, Całk koniec, Nat liczba_wyrazów):
+    Całk suma := (początek + koniec) / 2 * liczba_wyrazów
+    zwróć suma
+
+
+wypisz(suma_ciągu(1, 5, 5))

@@ -1,0 +1,197 @@
+Matlang - język programowania na maturę
+=======================================
+
+
+1.  Cele projektowe i uzasadnienie
+----------------------------------
+* Bardziej zwięzły i prostszy niż C, C++ czy Pascal.
+* Łatwo zrozumiały dla czytelnika znającego C, C++ czy Pascal.
+* Strukturalny, imperatywny, silnie typowany.
+* Jedyną strukturą danych jest tablica o stałej długości. Wartość ta może być
+  określona w czasie kompilacji lub podczas działania programu (dozwolone są
+  dynamicznie tworzone tablice).
+* Brak wskaźników - nie są potrzebne dla prostej algorytmiki.
+* Zmienne są przekazywane jako wartości, zaś tablice jako odwołania.
+* Skupiony na arytmetyce liczb całkowitych.
+
+
+2.  Spis podstawowych konceptów języka
+--------------------------------------
+Język można sklasyfikować jako strukturalny i imperatywny. Jego podstawowe
+elementy to:
+  * typy
+  * zmienne
+  * tablice
+  * funkcje
+  * struktury kontrolne
+  * wyrażenia
+
+
+  2a. Typy
+  --------
+  Następujące typy są zdefiniowane dla języka:
+    * Liczba naturalna (Nat)
+    * Liczba całkowita (Całk)
+    * Logiczna (Log)
+  
+  Liczby naturalne mogą przyjmować wartości od 0 do 2^32 - 1.
+  
+  Liczby całkowite są zapisywane w kodzie U2 i mogą przyjmować wartości od
+  -2^31 do 2^31 - 1.
+  
+  Wartości logiczne mogą przyjmować wartośći "prawda" lub "fałsz",
+  "tak" lub "nie", "1" lub "0" - zapis jest obojętny, a funkcjonalność
+  identyczna.
+  
+  W przypadku działań logicznych z udziałem liczb, wartości niezerowe są
+  traktowane jako prawdziwe, a wartość zerowa jako fałsz.
+  
+  W obliczu braku definicji wartości dla zmiennejm, typy liczbowe przyjmują
+  domyślną wartość zerową. Typ logiczny przyjmuje domyślną wartość fałszywą.
+
+
+  2b. Zmienne
+  -----------
+  Zmienne w języku należą do jednej z następujących kategorii:
+    * Lokalne
+    * Parametry
+    * Globalne
+  
+  Zmienne lokalne są deklarowane i definiowane w funkcji w której występują
+  (zasięg leksykalny). Są wymazywane przy wyjściu z funkcji.
+
+  Parametry zachowują się w większości jak zmienne lokalne, lecz w
+  przeciwieństwie do nich, ich wartości pochodzą z kontekstu funkcji
+  wywołującej. Też są wymazywane przy wyjściu z funkcji.
+  
+  Zmienne globalne są deklarowane poza funkcjami i utrzymują się aż do czasu
+  zakończenia programu.
+  
+  Konflikt nazwy pomiędzy zmienną lokalną lub parametrem a zmienną globalną są
+  rozwiązywane na korzyść zmiennej lokalnej. Konflikt pomiędzy zmiennymi
+  lokalnymi a parametrami jest traktowany jako błąd.
+
+
+  2c. Tablice
+  -----------
+  Tablice w języku mają stąłą długość określaną w momencie powstania.
+  
+  Tablice mogą być tworzone zarówno w czasie kompilacji jak i w czasie działania
+  programu.
+  
+  Tablica może przechowywać tylko jeden typ wartości.
+  
+  Tablice są indeksowane od 1.
+  
+  Podczas wywoływania funkcji tablice nie są w całości kopiowane, lecz tylko
+  odwołanie do nich. Bezpośrednie przypisanie do takiego odwołania w innej
+  funkcji nie zmieni wartości oryginalnej tablicy,
+
+
+  2d. Funkcje
+  -----------
+  Funkcje mają zasięg globalny i są traktowane jako stałe. Nie mogą być
+  definiowane wewnątrz innych funkcji (nie ma domknięć).
+  
+  Rekurencja jest dozwolona.
+  
+  Funkcja może zwrócić więcej niż jedną wartość.
+  
+  Funkcja bez określonego zwaracanego typu nie zwraca niczego.
+
+
+  2e. Struktury kontrolne
+  -----------------------
+  Następujące struktury sterujące biegiem wykonywania są określone:
+    * jeśli ... inaczej jeśli ... inaczej
+    * gdy ...
+    * wykonuj ... gdy ...
+    * dla i od start do koniec co krok ...
+
+  Struktura warunkowa jest analogiczna do if-else if-else z C. Może jednak też
+  być stosowana jako wyrażenie, o czym mowa w następnym podrozdziale.
+  
+  Pętla "gdy" najpierw sprawdza swój warunek, a potem w zależności od niego
+  powtarza lub nie swoje instrukcje.
+  
+  Pętla "wykonuj gdy" działa podobnie, lecz sprawdza swój warunek dopiero na
+  końcu.
+  
+  Pętla "dla" zlicza od wartości początkowej do wartości końcowej włącznie
+  inkrementując swoją zmienną (domyślnie jest to liczba naturalna) o 1 lub o 
+  określoną wartość.
+
+  
+  2f. Wyrażenia
+  -------------
+  Wyrażenia w języku składają się z:
+    * operatorów
+    * wywołań funkcji
+    * wartości bezpośrednich
+    * wyrazowego "jeśli"
+
+  Zestaw operatorów jest następujący:
+    1-wyrazowe: + - !
+    2-wyrazowe: + - * / % ^ & | == != < > <= >=
+    Przypisania: := += -= *= /= %= ^=
+
+  Wywołania funkcji nie odbiegają od języków opartych o ALGOL.
+  
+  Wartości bezpośrednie to liczby oraz stałe logiczne.
+  
+  Domyślnie liczby są traktowane jako dziesiętne.
+  
+  Innymi dozwolonymi formami zapisu są liczby szesnastkowe i binarne.
+
+
+3.  Reprezentacja języka
+------------------------
+Składnia języka jest inspirowana głównie Pythonem oraz C. Jest to najbardziej
+ewidentne w przypadku definicji bloków, które podobnie jak w Pythonie są
+określane poziomem wcięcia.
+
+Elementy dotyczące typowania statycznego są zaciągnięte z C.
+  
+
+4.  Gramatyka języka
+--------------------
+Uwaga: ta gramatyka opisuje język bardziej podobny do C niż do Pythona. Jest to
+związane z trudnością przedstawienia pojęcia poziomów wcięcia w formie gramatyki
+bezkontekstowej.
+
+Legenda:
+  nazwa - element "nazwa" musi się pojawić dokładnie raz.
+  *nazwa - element "nazwa" może pojawić się 0 lub więcej razy.
+  [nazwa] - element może pojawić się raz lub w ogóle.
+  {1-3}nazwa - element może pojawić się od 1 do 3 razy, włącznie.
+  "tekst" - znak lub ciąg znaków "tekst" musi się pojawić w identycznej formie.
+  tak | nie - jeden z dwóch elementów, "tak" lub "nie", może się pojawić w tym
+    miejscu.
+
+
+Program := *Global_def
+
+Global_def := Def_var | Def_fun
+
+Def_var := typename ident [:= expr]
+
+Def_fun := "funkcja" [typelist] ident params ":" Func_body
+
+typename := "Nat" | "Całk" | "Log"
+
+typelist := typename ["," typelist]
+
+
+
+
+5.  Podstawowe funkcje
+----------------------
+funkcja Nat dł(?[] tablica)
+  Specjalna funkcja "dł" zwraca długość tablicy, co odpowiada indeksowi
+  ostatniego dostępnego elementu tablicy. Przyjmuje tablice dowolnego typu.
+
+funkcja Nat odczytaj()
+  Czyta jeden znak z wejścia i zwraca jego kod.
+
+funkcja wypisz(Nat znak)
+  Wypisuje znak Unicodu o kodzie odpowiadającym argumentowi.
