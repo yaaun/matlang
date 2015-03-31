@@ -1,6 +1,7 @@
 #ifndef STD_STRING
 #define STD_STRING
 #include <string>
+using std::string;
 #endif
 
 #ifndef STD_LIST
@@ -11,6 +12,7 @@
 #ifndef STD_EXCEPTION
 #define STD_EXCEPTION
 #include <exception>
+using std::exception;
 #endif
 
 
@@ -44,17 +46,18 @@ enum Operators {
 };
 
 
-class InvalidName : public Exception {
+class InvalidName : public exception {
   private:
     string name;
 
   public:
-    InvalidName(string& s) name(s) {};
+    InvalidName(string& s): name(s) {}
+    ~InvalidName() throw ();
     const char* what();
-}
+};
 
 const char* InvalidName::what() {
-    return (string("Invalid name \"") + errStr + string("\"")).c_str();
+    return (string("Invalid name \"") + name + string("\"")).c_str();
 }
 
 
@@ -81,7 +84,7 @@ class Keyword : public Token {
     
     Keyword(Keywords kw): word(kw) {}
     
-    static Keyword getKeyword(string s) throw InvalidName;
+    static Keywords getKeyword(string s) throw (InvalidName);
 };
 
 string Keyword::strings[] = {
@@ -93,19 +96,21 @@ string Keyword::strings[] = {
     string("dla")
 };
 
-Keyword::getKeyword(string s) throw InvalidName {
+Keywords Keyword::getKeyword(string s) throw (InvalidName) {
+    Keywords kw;
+    
     if (s == Keyword::strings[0]) {
-        return Keywords.FUNC;
+        return FUNC;
     } else if (s == Keyword::strings[1]) {
-        return Keywords.IF;
+        return IF;
     } else if (s == Keyword::strings[2]) {
-        return Keywords.ELSE;
+        return ELSE;
     } else if (s == Keyword::strings[3]) {
-        return Keywords.WHILE;
+        return WHILE;
     } else if (s == Keyword::strings[4]) {
-        return Keywords.DO;
+        return DO;
     } else if (s == Keyword::strings[5]) {
-        return Keywords.FOR;
+        return FOR;
     } else {
         throw InvalidName(s);
     }
@@ -126,7 +131,17 @@ Keywords toKeyword(string s) {
 
 
 list<Token> scan(string s) {
+    enum {
+        ALPHA,
+        NUMERIC,
+        OPERATOR,
+        WHITESPACE
+    } state;
+    
     for (unsigned i = 0; i < s.size(); i++) {
-        
+        switch (state) {
+          default:
+            
+        }
     }
 }
