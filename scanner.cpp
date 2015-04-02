@@ -7,6 +7,7 @@ using std::string;
 #ifndef STD_LIST
 #define STD_LIST
 #include <list>
+using std::list;
 #endif
 
 #ifndef STD_EXCEPTION
@@ -16,16 +17,11 @@ using std::exception;
 #endif
 
 
-enum Keywords {
-    FUNC,
-    
-    IF,
-    ELSE,
-    
-    WHILE,
-    DO,
-    FOR
-};
+#ifndef STD_CCTYPE
+#define STD_CCTYPE
+#include <cctype>
+#endif
+
 
 
 enum Operators {
@@ -80,11 +76,22 @@ class Keyword : public Token {
     static string strings[];
 
   public:
+    enum Keywords {
+        FUNC,
+        
+        IF,
+        ELSE,
+        
+        WHILE,
+        DO,
+        FOR
+    };
+    
     Keywords word;
     
     Keyword(Keywords kw): word(kw) {}
     
-    static Keywords getKeyword(string s) throw (InvalidName);
+    static Keywords match(string s) throw (InvalidName);
 };
 
 string Keyword::strings[] = {
@@ -96,21 +103,21 @@ string Keyword::strings[] = {
     string("dla")
 };
 
-Keywords Keyword::getKeyword(string s) throw (InvalidName) {
-    Keywords kw;
+Keyword::Keywords Keyword::match(string s) throw (InvalidName) {
+    Keyword::Keywords kw;
     
     if (s == Keyword::strings[0]) {
-        return FUNC;
+        return Keyword::FUNC;
     } else if (s == Keyword::strings[1]) {
-        return IF;
+        return Keyword::IF;
     } else if (s == Keyword::strings[2]) {
-        return ELSE;
+        return Keyword::ELSE;
     } else if (s == Keyword::strings[3]) {
-        return WHILE;
+        return Keyword::WHILE;
     } else if (s == Keyword::strings[4]) {
-        return DO;
+        return Keyword::DO;
     } else if (s == Keyword::strings[5]) {
-        return FOR;
+        return Keyword::FOR;
     } else {
         throw InvalidName(s);
     }
@@ -125,10 +132,6 @@ class Whitespace : public Token {
     Whitespace(unsigned s): size(s) {}
 };
 
-Keywords toKeyword(string s) {
-    
-}
-
 
 list<Token> scan(string s) {
     enum {
@@ -138,10 +141,37 @@ list<Token> scan(string s) {
         WHITESPACE
     } state;
     
-    for (unsigned i = 0; i < s.size(); i++) {
+    for (int i = 0; i < s.size();) {
+        char c = s[i];
+        
         switch (state) {
+          case ALPHA:
+          
+          break;
+          case NUMERIC:
+          
+          break;
+          case OPERATOR:
+          
+          break;
+          case WHITESPACE:
+            if (c == '\r' || c == '\n') {
+                
+            } else if (c == ' ' || c == '\t') {
+                
+            } else {
+                
+            }
+          break;
           default:
-            
+            if (isalpha(c)) {
+                state = ALPHA;
+            } else if (isdigit(c)) {
+                
+            } else (c == '\r') {
+                
+            }
+          break;
         }
     }
 }
