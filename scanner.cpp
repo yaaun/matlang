@@ -1,98 +1,12 @@
-#ifndef STD_STRING
-#define STD_STRING
-#include <string>
-using std::string;
-#endif
-
-#ifndef STD_LIST
-#define STD_LIST
-#include <list>
-using std::list;
-#endif
-
-#ifndef STD_EXCEPTION
-#define STD_EXCEPTION
-#include <exception>
-using std::exception;
-#endif
-
-
 #ifndef STD_CCTYPE
 #define STD_CCTYPE
 #include <cctype>
 #endif
 
+#ifndef SCANNER_HPP
+#include "scanner.hpp"
+#endif
 
-
-enum Operators {
-    ASSIGN,
-    
-    ADD,
-    SUB,
-    MUL,
-    DIV,
-    MOD,
-    
-    //  Combined assignment operators.
-    A_ADD,
-    A_SUB,
-    A_MUL,
-    A_DIV,
-    A_MOD
-};
-
-
-class InvalidName : public exception {
-  private:
-    string name;
-
-  public:
-    InvalidName(string& s): name(s) {}
-    ~InvalidName() throw ();
-    const char* what();
-};
-
-const char* InvalidName::what() {
-    return (string("Invalid name \"") + name + string("\"")).c_str();
-}
-
-
-class Token {
-  public:
-    Token();
-};
-
-
-class Identifier : public Token {
-  public:
-    string name;
-    
-    Identifier(string s);
-};
-
-
-class Keyword : public Token {
-  private:
-    static string strings[];
-
-  public:
-    enum Keywords {
-        FUNC,
-        
-        IF,
-        ELSE,
-        
-        WHILE,
-        DO,
-        FOR
-    };
-    
-    Keywords word;
-    
-    Keyword(Keywords kw): word(kw) {}
-    
-    static Keywords match(string s) throw (InvalidName);
-};
 
 string Keyword::strings[] = {
     string("funkcja"),
@@ -124,52 +38,84 @@ Keyword::Keywords Keyword::match(string s) throw (InvalidName) {
 }
 
 
-//  This only counts when used to indent.
-class Whitespace : public Token {
-  public:
-    unsigned size;
-    
-    Whitespace(unsigned s): size(s) {}
-};
-
-
-list<Token> scan(string s) {
+std::list<Token> scan(string s) {
     enum {
         ALPHA,
         NUMERIC,
         OPERATOR,
-        WHITESPACE
+        WHITESPACE,
+        NUL
     } state;
+    state = NUL;
+    
+    enum {
+        DECIMAL,
+        BINARY,
+        HEXADECIMAL,
+        UNKNOWN
+    } numFormat;
+    
+    std::list<Token> tokens;
+    
+    int identStart, identLen;
+    int numStart, numLen;
+    int opStart, opLen;
+    int wsCount;
     
     for (int i = 0; i < s.size();) {
         char c = s[i];
         
         switch (state) {
           case ALPHA:
-          
+            if (identLen == 0) {
+                //  Start of an identifier.
+                identStart = i;
+                identLen += 1;
+                i += 1;
+            } else if (std::isalnum(c)) {
+                //  Continuation of an identifier.
+                identLen += 1;
+                i += 1;
+            } else {
+                //  Found a non-whitespace char.
+                tokens.push_back(Identifier(s.substr(identStart, identLen)));
+                identLen = 0;
+                state = NUL;
+            }
           break;
           case NUMERIC:
-          
-          break;
-          case OPERATOR:
-          
-          break;
-          case WHITESPACE:
-            if (c == '\r' || c == '\n') {
-                
-            } else if (c == ' ' || c == '\t') {
+            if (numLen == 0) {
                 
             } else {
                 
             }
           break;
+          case OPERATOR:
+            if (std::ispunct(c)) {
+                
+            }
+          break;
+          case WHITESPACE:
+            if (c == '\r' || c == '\n') {
+                wsCount = 0;
+                i += 1;
+            } else if (c == ' ' || c == '\t') {
+                wsCount += 1;
+                i += 1;
+            } else {
+                tokens.push_back(Whitespace(wsCount));
+                state = NUL;
+            }
+          break;
           default:
-            if (isalpha(c)) {
+            if (std::isalpha(c)) {
                 state = ALPHA;
-            } else if (isdigit(c)) {
-                
-            } else (c == '\r') {
-                
+            } else if (std::isdigit(c)) {
+                state = NUMERIC;
+            } else if (std::ispunct(c)) {
+                state = OPERATOR;
+            } else if (std::iscontrol(c)) {
+                state = WHITESPACE;
             }
           break;
         }
