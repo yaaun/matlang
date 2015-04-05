@@ -40,11 +40,13 @@ Keyword::Keywords Keyword::match(string s) throw (InvalidName) {
 
 std::list<Token> scan(string s) {
     enum {
+        NUL,
         ALPHA,
+        ALPHA_START,
         NUMERIC,
+        NUMERIC_START,
         OPERATOR,
-        WHITESPACE,
-        NUL
+        WHITESPACE
     } state;
     state = NUL;
     
@@ -66,13 +68,15 @@ std::list<Token> scan(string s) {
         char c = s[i];
         
         switch (state) {
+          case ALPHA_START:
+            //  Start of an identifier.
+            identStart = i;
+            identLen = 1;
+            i += 1;
+            state = ALPHA;
+          break;
           case ALPHA:
-            if (identLen == 0) {
-                //  Start of an identifier.
-                identStart = i;
-                identLen += 1;
-                i += 1;
-            } else if (std::isalnum(c)) {
+            if (std::isalnum(c)) {
                 //  Continuation of an identifier.
                 identLen += 1;
                 i += 1;
@@ -82,6 +86,12 @@ std::list<Token> scan(string s) {
                 identLen = 0;
                 state = NUL;
             }
+          break;
+          case NUMERIC_START:
+            numStart = i;
+            numLen = 1;
+            i += 1;
+            state = NUMERIC;
           break;
           case NUMERIC:
             if (numLen == 0) {
@@ -109,9 +119,9 @@ std::list<Token> scan(string s) {
           break;
           default:
             if (std::isalpha(c)) {
-                state = ALPHA;
+                state = ALPHA_START;
             } else if (std::isdigit(c)) {
-                state = NUMERIC;
+                state = NUMERIC_START;
             } else if (std::ispunct(c)) {
                 state = OPERATOR;
             } else if (std::iscontrol(c)) {
